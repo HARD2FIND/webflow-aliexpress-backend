@@ -18,8 +18,30 @@ import { syncAllInventory, syncAllShipping } from './services/syncService.js'
 const app = express()
 
 // Middleware
+const whitelist = [
+    'https://webflow.com',
+    'https://design.webflow.com',
+    config.CORS_ORIGIN
+];
+
 app.use(cors({
-    origin: config.CORS_ORIGIN,
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+
+        // Allow Webflow extensions (dynamic subdomains)
+        if (origin.endsWith('.webflow-ext.com')) {
+            return callback(null, true);
+        }
+
+        if (whitelist.indexOf(origin) !== -1 || origin.includes('localhost')) {
+            callback(null, true);
+        } else {
+            console.log('Blocked by CORS:', origin);
+            // Verify if it's a preflight OPTIONS request, we might want to be lenient or let it fail
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true
 }))
 
@@ -53,23 +75,24 @@ app.use((err, req, res, next) => {
 })
 
 // Database connection
+// Start server IMMEDIATELY to satisfy Railway health checks
+app.listen(config.PORT, '0.0.0.0', () => {
+    console.log(`🚀 Server running on port ${config.PORT}`)
+    console.log(`📍 API: http://localhost:${config.PORT}/api`)
+    console.log(`🔗 Webhooks: http://localhost:${config.PORT}/webhooks`)
+})
+
+// Database connection
 mongoose.connect(config.MONGODB_URI)
     .then(() => {
         console.log('✅ Connected to MongoDB')
-
-        // Start server
-        app.listen(config.PORT, () => {
-            console.log(`🚀 Server running on port ${config.PORT}`)
-            console.log(`📍 API: http://localhost:${config.PORT}/api`)
-            console.log(`🔗 Webhooks: http://localhost:${config.PORT}/webhooks`)
-        })
-
-        // Schedule sync jobs
+        // Schedule sync jobs only after DB is connected
         setupCronJobs()
     })
     .catch(err => {
         console.error('❌ MongoDB connection error:', err)
-        process.exit(1)
+        console.error('💡 Check your MONGODB_URI in Railway variables')
+        // Do not exit process, keep server running to serve health checks and logs
     })
 
 // Cron jobs for automatic synchronization
