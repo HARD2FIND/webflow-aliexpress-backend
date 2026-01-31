@@ -75,25 +75,25 @@ app.use((err, req, res, next) => {
 })
 
 // Database connection
+console.log('🏁 Starting application...')
+
 // Start server IMMEDIATELY to satisfy Railway health checks
-app.listen(config.PORT, '0.0.0.0', () => {
+const server = app.listen(config.PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on port ${config.PORT}`)
-    console.log(`📍 API: http://localhost:${config.PORT}/api`)
-    console.log(`🔗 Webhooks: http://localhost:${config.PORT}/webhooks`)
 })
 
 // Database connection
+/* mongo db disabled for testing
 mongoose.connect(config.MONGODB_URI)
     .then(() => {
         console.log('✅ Connected to MongoDB')
-        // Schedule sync jobs only after DB is connected
         setupCronJobs()
     })
     .catch(err => {
         console.error('❌ MongoDB connection error:', err)
         console.error('💡 Check your MONGODB_URI in Railway variables')
-        // Do not exit process, keep server running to serve health checks and logs
     })
+*/
 
 // Cron jobs for automatic synchronization
 function setupCronJobs() {
