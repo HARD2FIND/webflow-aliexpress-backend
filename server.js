@@ -17,6 +17,9 @@ import { syncAllInventory, syncAllShipping } from './services/syncService.js'
 
 const app = express()
 
+// Trust proxy for Railway (Required for rate limiting)
+app.set('trust proxy', 1)
+
 // Middleware
 const whitelist = [
     'https://webflow.com',
