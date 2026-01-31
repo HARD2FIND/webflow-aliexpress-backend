@@ -99,33 +99,6 @@ mongoose.connect(config.MONGODB_URI)
     })
 */
 
-// Cron jobs for automatic synchronization
-/*
-function setupCronJobs() {
-    // Inventory sync every 6 hours
-    cron.schedule('0 */6 * * * ', async () => {
-console.log('🔄 Running scheduled inventory sync...')
-try {
-    await syncAllInventory()
-    console.log('✅ Inventory sync completed')
-} catch (error) {
-    console.error('❌ Inventory sync failed:', error)
-}
-    })
-
-// Shipping sync every hour
-cron.schedule('0 * * * *', async () => {
-    console.log('🚚 Running scheduled shipping sync...')
-    try {
-        await syncAllShipping()
-        console.log('✅ Shipping sync completed')
-    } catch (error) {
-        console.error('❌ Shipping sync failed:', error)
-    }
-})
-
-console.log('⏰ Cron jobs scheduled')
-}
-*/
+// Cron jobs removed for minimal server test
 
 export default app
