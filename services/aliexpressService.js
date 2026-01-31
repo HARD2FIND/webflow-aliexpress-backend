@@ -38,11 +38,20 @@ class AliExpressService {
         const allParams = { ...baseParams, ...params }
         allParams.sign = this.generateSign(allParams)
 
+        console.log(`📡 Calling AliExpress: ${method}`)
+        // console.log('Params:', JSON.stringify(allParams)) // Don't log full params (security)
+
         try {
             const response = await axios.post(this.apiUrl, null, { params: allParams })
+            console.log(`✅ AliExpress Response (${method}):`, JSON.stringify(response.data).substring(0, 500) + '...')
+
+            if (response.data.error_response) {
+                console.error('❌ AliExpress API Error:', response.data.error_response)
+            }
+
             return response.data
         } catch (error) {
-            console.error('AliExpress API Error:', error.response?.data || error.message)
+            console.error('❌ AliExpress HTTP Error:', error.response?.data || error.message)
             throw new Error(`AliExpress API Error: ${error.message}`)
         }
     }
