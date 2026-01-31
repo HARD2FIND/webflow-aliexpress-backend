@@ -1,104 +1,21 @@
 import express from 'express'
-import cors from 'cors'
-// import mongoose from 'mongoose'
-// import cron from 'node-cron'
-// import rateLimit from 'express-rate-limit'
-import config from './config/index.js'
 
-// Routes
-// import aliexpressRoutes from './routes/aliexpress.js'
-// import productRoutes from './routes/products.js'
-// import orderRoutes from './routes/orders.js'
-// import settingsRoutes from './routes/settings.js'
-// import webhookRoutes from './routes/webhooks.js'
-
-// Services
-// import { syncAllInventory, syncAllShipping } from './services/syncService.js'
+console.log('🏁 Starting SUPER MINIMAL application...')
 
 const app = express()
 
-// Middleware
-/*
-const whitelist = [
-    'https://webflow.com',
-    'https://design.webflow.com',
-    config.CORS_ORIGIN
-];
-
-app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-
-        // Allow Webflow extensions (dynamic subdomains)
-        if (origin.endsWith('.webflow-ext.com')) {
-            return callback(null, true);
-        }
-
-        if (whitelist.indexOf(origin) !== -1 || origin.includes('localhost')) {
-            callback(null, true);
-        } else {
-            console.log('Blocked by CORS:', origin);
-            // Verify if it's a preflight OPTIONS request, we might want to be lenient or let it fail
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
-    credentials: true
-}))
-
-app.use(express.json())
-
-// Rate limiting
-const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100 // limit each IP to 100 requests per windowMs
+app.get('/', (req, res) => {
+    res.send('Hello World!')
 })
-app.use('/api/', limiter)
 
-// Routes
-app.use('/api/aliexpress', aliexpressRoutes)
-app.use('/api/products', productRoutes)
-app.use('/api/orders', orderRoutes)
-app.use('/api/settings', settingsRoutes)
-app.use('/webhooks', webhookRoutes)
-*/
-
-// Health check
 app.get('/health', (req, res) => {
     res.json({ status: 'healthy', timestamp: new Date().toISOString() })
 })
 
-/*
-// Error handling
-app.use((err, req, res, next) => {
-    console.error('Error:', err)
-    res.status(err.status || 500).json({
-        error: err.message || 'Internal server error'
-    })
+const PORT = process.env.PORT || 3000
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 SUPER MINIMAL Server running on port ${PORT}`)
 })
-*/
-
-// Database connection
-console.log('🏁 Starting MINIMAL application...')
-
-// Start server IMMEDIATELY to satisfy Railway health checks
-const server = app.listen(config.PORT, '0.0.0.0', () => {
-    console.log(`🚀 Minimal Server running on port ${config.PORT}`)
-})
-
-// Database connection
-/* mongo db disabled for testing
-mongoose.connect(config.MONGODB_URI)
-    .then(() => {
-        console.log('✅ Connected to MongoDB')
-        setupCronJobs()
-    })
-    .catch(err => {
-        console.error('❌ MongoDB connection error:', err)
-        console.error('💡 Check your MONGODB_URI in Railway variables')
-    })
-*/
-
-// Cron jobs removed for minimal server test
 
 export default app
