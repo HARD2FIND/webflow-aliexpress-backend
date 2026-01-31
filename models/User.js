@@ -1,6 +1,7 @@
 import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema({
+    _id: String, // Explicitly allow String IDs (like 'default-admin')
     webflowUserId: {
         type: String,
         required: true,

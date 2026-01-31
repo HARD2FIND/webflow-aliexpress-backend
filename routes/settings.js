@@ -41,6 +41,9 @@ router.get('/', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
     try {
         const userId = req.headers['x-user-id'] || 'default-admin' // Fallback
+        console.log(`💾 SAVING SETTINGS FOR USER: ${userId}`)
+        console.log('📦 Body:', req.body)
+
         const {
             aliexpress_app_key,
             aliexpress_app_secret,
