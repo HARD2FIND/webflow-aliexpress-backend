@@ -46,6 +46,15 @@ app.use(cors({
 
 app.use(express.json())
 
+// Global Auth Middleware for Single User Mode
+app.use((req, res, next) => {
+    if (!req.headers['x-user-id']) {
+        console.log('⚠️ No x-user-id header, defaulting to default-admin')
+        req.headers['x-user-id'] = 'default-admin'
+    }
+    next()
+})
+
 // Rate limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
@@ -64,14 +73,7 @@ app.get('/health', (req, res) => {
     res.json({ status: 'healthy', timestamp: new Date().toISOString() })
 })
 
-// Global Auth Middleware for Single User Mode
-app.use((req, res, next) => {
-    if (!req.headers['x-user-id']) {
-        console.log('⚠️ No x-user-id header, defaulting to default-admin')
-        req.headers['x-user-id'] = 'default-admin'
-    }
-    next()
-})
+// Middleware removed (redundant)
 
 // Error handling
 app.use((err, req, res, next) => {
