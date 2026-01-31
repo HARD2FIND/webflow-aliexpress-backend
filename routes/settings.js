@@ -54,7 +54,13 @@ router.post('/', async (req, res, next) => {
         // Auto-create default user if missing
         if (!user) {
             if (userId === 'default-admin') {
-                user = new User({ _id: 'default-admin', email: 'admin@local', settings: {} })
+                user = new User({
+                    _id: 'default-admin',
+                    webflowUserId: 'default-admin', // REQUIRED by Schema
+                    webflowAccessToken: 'dummy_token', // REQUIRED by Schema
+                    email: 'admin@local',
+                    settings: {}
+                })
             } else {
                 return res.status(404).json({ error: 'User not found' })
             }
