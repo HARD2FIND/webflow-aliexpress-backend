@@ -28,7 +28,7 @@ class AliExpressService {
             timestamp: Date.now().toString(),
             format: 'json',
             v: '2.0',
-            sign_method: 'md5'
+            sign_method: 'hmac'
         }
 
         if (this.sessionKey) {
