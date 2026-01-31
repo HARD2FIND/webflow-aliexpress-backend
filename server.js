@@ -60,9 +60,17 @@ app.use('/api/orders', orderRoutes)
 app.use('/api/settings', settingsRoutes)
 app.use('/webhooks', webhookRoutes)
 
-// Health check
 app.get('/health', (req, res) => {
     res.json({ status: 'healthy', timestamp: new Date().toISOString() })
+})
+
+// Global Auth Middleware for Single User Mode
+app.use((req, res, next) => {
+    if (!req.headers['x-user-id']) {
+        console.log('⚠️ No x-user-id header, defaulting to default-admin')
+        req.headers['x-user-id'] = 'default-admin'
+    }
+    next()
 })
 
 // Error handling
