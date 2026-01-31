@@ -1,23 +1,24 @@
 import express from 'express'
 import cors from 'cors'
-import mongoose from 'mongoose'
-import cron from 'node-cron'
-import rateLimit from 'express-rate-limit'
+// import mongoose from 'mongoose'
+// import cron from 'node-cron'
+// import rateLimit from 'express-rate-limit'
 import config from './config/index.js'
 
 // Routes
-import aliexpressRoutes from './routes/aliexpress.js'
-import productRoutes from './routes/products.js'
-import orderRoutes from './routes/orders.js'
-import settingsRoutes from './routes/settings.js'
-import webhookRoutes from './routes/webhooks.js'
+// import aliexpressRoutes from './routes/aliexpress.js'
+// import productRoutes from './routes/products.js'
+// import orderRoutes from './routes/orders.js'
+// import settingsRoutes from './routes/settings.js'
+// import webhookRoutes from './routes/webhooks.js'
 
 // Services
-import { syncAllInventory, syncAllShipping } from './services/syncService.js'
+// import { syncAllInventory, syncAllShipping } from './services/syncService.js'
 
 const app = express()
 
 // Middleware
+/*
 const whitelist = [
     'https://webflow.com',
     'https://design.webflow.com',
@@ -60,12 +61,14 @@ app.use('/api/products', productRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/settings', settingsRoutes)
 app.use('/webhooks', webhookRoutes)
+*/
 
 // Health check
 app.get('/health', (req, res) => {
     res.json({ status: 'healthy', timestamp: new Date().toISOString() })
 })
 
+/*
 // Error handling
 app.use((err, req, res, next) => {
     console.error('Error:', err)
@@ -73,13 +76,14 @@ app.use((err, req, res, next) => {
         error: err.message || 'Internal server error'
     })
 })
+*/
 
 // Database connection
-console.log('🏁 Starting application...')
+console.log('🏁 Starting MINIMAL application...')
 
 // Start server IMMEDIATELY to satisfy Railway health checks
 const server = app.listen(config.PORT, '0.0.0.0', () => {
-    console.log(`🚀 Server running on port ${config.PORT}`)
+    console.log(`🚀 Minimal Server running on port ${config.PORT}`)
 })
 
 // Database connection
@@ -96,30 +100,32 @@ mongoose.connect(config.MONGODB_URI)
 */
 
 // Cron jobs for automatic synchronization
+/*
 function setupCronJobs() {
     // Inventory sync every 6 hours
-    cron.schedule('0 */6 * * *', async () => {
-        console.log('🔄 Running scheduled inventory sync...')
-        try {
-            await syncAllInventory()
-            console.log('✅ Inventory sync completed')
-        } catch (error) {
-            console.error('❌ Inventory sync failed:', error)
-        }
-    })
-
-    // Shipping sync every hour
-    cron.schedule('0 * * * *', async () => {
-        console.log('🚚 Running scheduled shipping sync...')
-        try {
-            await syncAllShipping()
-            console.log('✅ Shipping sync completed')
-        } catch (error) {
-            console.error('❌ Shipping sync failed:', error)
-        }
-    })
-
-    console.log('⏰ Cron jobs scheduled')
+    cron.schedule('0 */6 * * * ', async () => {
+console.log('🔄 Running scheduled inventory sync...')
+try {
+    await syncAllInventory()
+    console.log('✅ Inventory sync completed')
+} catch (error) {
+    console.error('❌ Inventory sync failed:', error)
 }
+    })
+
+// Shipping sync every hour
+cron.schedule('0 * * * *', async () => {
+    console.log('🚚 Running scheduled shipping sync...')
+    try {
+        await syncAllShipping()
+        console.log('✅ Shipping sync completed')
+    } catch (error) {
+        console.error('❌ Shipping sync failed:', error)
+    }
+})
+
+console.log('⏰ Cron jobs scheduled')
+}
+*/
 
 export default app
