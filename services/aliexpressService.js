@@ -47,12 +47,14 @@ class AliExpressService {
 
             if (response.data.error_response) {
                 console.error('❌ AliExpress API Error:', response.data.error_response)
+                throw new Error(response.data.error_response.msg || 'Unknown AliExpress API Error')
             }
 
             return response.data
         } catch (error) {
             console.error('❌ AliExpress HTTP Error:', error.response?.data || error.message)
-            throw new Error(`AliExpress API Error: ${error.message}`)
+            // Propagate the specific API message if available
+            throw new Error(error.message || `AliExpress API Error`)
         }
     }
 
