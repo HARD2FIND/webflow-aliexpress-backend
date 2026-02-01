@@ -47,14 +47,18 @@ class AliExpressService {
 
             if (response.data.error_response) {
                 console.error('❌ AliExpress API Error:', response.data.error_response)
-                throw new Error(response.data.error_response.msg || 'Unknown AliExpress API Error')
+                // Stringify the whole error object so we can see the code/sub_code in the UI
+                throw new Error(JSON.stringify(response.data.error_response))
             }
 
             return response.data
         } catch (error) {
             console.error('❌ AliExpress HTTP Error:', error.response?.data || error.message)
-            // Propagate the specific API message if available
-            throw new Error(error.message || `AliExpress API Error`)
+            // If it's the JSON error we just threw, pass it through. Otherwise, wrap it.
+            if (error.message && error.message.startsWith('{')) {
+                throw error
+            }
+            throw new Error(error.message || 'Unknown Network Error')
         }
     }
 
