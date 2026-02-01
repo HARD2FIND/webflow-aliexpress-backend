@@ -82,7 +82,9 @@ class AliExpressService {
         if (options.sortBy === 'orders') params.sort = 'LAST_VOLUME_DESC'
 
         const result = await this.makeRequest('aliexpress.affiliate.product.query', params)
-        return result?.result?.products || []
+        const products = result?.result?.products || []
+        console.log(`📦 Search found ${products.length} products`)
+        return products
     }
 
     // Get product details
