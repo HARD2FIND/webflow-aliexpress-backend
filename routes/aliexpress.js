@@ -7,7 +7,7 @@ const router = express.Router()
 // Search products
 router.post('/search', async (req, res, next) => {
     try {
-        const { keywords, minPrice, maxPrice } = req.body
+        const { keywords, minPrice, maxPrice, sortBy, deliveryDays } = req.body
         const userId = req.headers['x-user-id'] // In production, get from OAuth session
 
         const user = await User.findById(userId)
@@ -23,7 +23,9 @@ router.post('/search', async (req, res, next) => {
 
         const results = await aliexpress.searchProducts(keywords, {
             minPrice,
-            maxPrice
+            maxPrice,
+            sortBy,
+            deliveryDays
         })
 
         res.json({ success: true, results })

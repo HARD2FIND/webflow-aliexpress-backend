@@ -60,13 +60,24 @@ class AliExpressService {
     async searchProducts(keywords, options = {}) {
         const params = {
             keywords,
-            page_size: options.pageSize || 20,
-            page_no: options.pageNo || 1
+            page_size: options.pageSize || 40, // Increased page size
+            page_no: options.pageNo || 1,
+            target_currency: 'USD',
+            target_language: 'EN',
+            ship_to_country: 'US', // Default to US, could be configurable
+            sort: options.sort || 'LAST_VOLUME_DESC' // Default sort by orders
         }
 
         if (options.minPrice) params.min_price = options.minPrice
         if (options.maxPrice) params.max_price = options.maxPrice
         if (options.categoryId) params.category_id = options.categoryId
+        if (options.deliveryDays) params.delivery_days = options.deliveryDays
+
+        // Sorting mapping
+        // sort options: SALE_PRICE_ASC, SALE_PRICE_DESC, LAST_VOLUME_DESC
+        if (options.sortBy === 'price_asc') params.sort = 'SALE_PRICE_ASC'
+        if (options.sortBy === 'price_desc') params.sort = 'SALE_PRICE_DESC'
+        if (options.sortBy === 'orders') params.sort = 'LAST_VOLUME_DESC'
 
         const result = await this.makeRequest('aliexpress.affiliate.product.query', params)
         return result?.result?.products || []
